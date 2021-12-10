@@ -54,6 +54,16 @@ async fn test_hello(web3: Web3<Http>) -> web3::contract::Result<()> {
 }
 
 async fn test_erc20(web3: Web3<Http>) -> web3::contract::Result<()> {
+    let bytecode = include_str!("./res/erc20.bin");
+    let accounts = web3.eth().accounts().await?;
+    println!("accounts: {:?}", &accounts);
+    let contract = Contract::deploy(web3.eth(), include_bytes!("./res/erc20.abi"))?
+        .confirmations(0)
+        .poll_interval(time::Duration::from_secs(10))
+        .options(Options::with(|opt| opt.gas = Some(3_000_000.into())))
+        .execute(bytecode, ("MyToken".to_string(), "MTK".to_string()), accounts[0])
+        .await?;
+    println!("contract deployed at: {}", contract.address());
     Ok(())
 }
 
