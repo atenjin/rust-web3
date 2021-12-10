@@ -1,9 +1,10 @@
 use std::time;
 use hex_literal::hex;
-use web3::{contract::{Contract, Options}, Transport, types::U256};
+use web3::{contract::{Contract, Options}, Transport, types::U256, Web3};
 use web3::api::Eth;
 use web3::contract::Error;
 use web3::contract::tokens::{Detokenize, Tokenize};
+use web3::transports::Http;
 use web3::types::{Address, BlockNumber, FilterBuilder, Log};
 
 #[tokio::main]
@@ -12,6 +13,12 @@ async fn main() -> web3::contract::Result<()> {
     let http = web3::transports::Http::new("http://localhost:8545")?;
     let web3 = web3::Web3::new(http);
 
+    // test_hello(web3).await?;
+    test_erc20(web3).await?;
+    Ok(())
+}
+
+async fn test_hello(web3: Web3<Http>) -> web3::contract::Result<()> {
     // let my_account = hex!("d028d24f16a8893bd078259d413372ac01580769").into();
     let bytecode = include_str!("./res/SimpleEvent.bin");
     let accounts = web3.eth().accounts().await?;
@@ -41,8 +48,12 @@ async fn main() -> web3::contract::Result<()> {
         include_bytes!("./res/SimpleEvent.abi"),
     )?;
 
-    let d = events::<_ ,Address>(web3.eth(), &existed_contract, "Hello", Some(0.into()), None).await;
+    let d = events::<_ ,Address>(web3.eth(), &existed_contract, "Hello", Some(0.into()), None).await?;
     println!("{:?}", d);
+    Ok(())
+}
+
+async fn test_erc20(web3: Web3<Http>) -> web3::contract::Result<()> {
     Ok(())
 }
 
