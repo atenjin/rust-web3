@@ -61,7 +61,7 @@ async fn test_erc20(web3: Web3<Http>) -> web3::contract::Result<()> {
         .confirmations(0)
         .poll_interval(time::Duration::from_secs(10))
         .options(Options::with(|opt| opt.gas = Some(3_000_000.into())))
-        .execute(bytecode, ("MyToken".to_string(), "MTK".to_string()), accounts[0])
+        .execute(bytecode, (), accounts[0])
         .await?;
     println!("contract deployed at: {}", contract.address());
     Ok(())
