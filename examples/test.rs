@@ -64,6 +64,15 @@ async fn test_erc20(web3: Web3<Http>) -> web3::contract::Result<()> {
         .execute(bytecode, (), accounts[0])
         .await?;
     println!("contract deployed at: {}", contract.address());
+    // issue
+    let v: U256 = 1000000.into();
+    let tx = contract.call("issue", (accounts[0], v), accounts[0], Options::default()).await?;
+    println!("got tx for issue: {:?}", tx);
+    // transfer
+    let tx = contract.call("transfer", (accounts[1], v), accounts[0], Options::default()).await?;
+    println!("got tx for transfer: {:?}", tx);
+
+    
     Ok(())
 }
 
