@@ -72,7 +72,9 @@ async fn test_erc20(web3: Web3<Http>) -> web3::contract::Result<()> {
     let tx = contract.call("transfer", (accounts[1], v), accounts[0], Options::default()).await?;
     println!("got tx for transfer: {:?}", tx);
 
-    
+    type TransferEvent = (Address, Address, U256);
+    let d = events::<_ ,TransferEvent>(web3.eth(), &contract, "Transfer", Some(0.into()), None).await?;
+    println!("{:?}", d);
     Ok(())
 }
 
